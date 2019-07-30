@@ -84,4 +84,10 @@ public class ArrayGridTest {
         grid.resize(WIDTH, HEIGHT-1);
     }
 
+    @Test
+    public void testClear() {
+        grid.clear();
+        assertEmpty();
+    }
+
 }
