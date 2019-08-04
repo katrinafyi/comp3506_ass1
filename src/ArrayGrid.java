@@ -36,6 +36,7 @@ public class ArrayGrid<T> implements Grid<T> {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public T get(int x, int y) throws IndexOutOfBoundsException {
         return (T)arrayData[x][y];
 	}
