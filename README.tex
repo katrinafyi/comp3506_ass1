@@ -42,11 +42,14 @@ mostly empty (i.e.\ it is sparse), most of this space would remain
 empty (holding null values).
 
 \subsection*{An Alternative}
-One possible alternative is a hash map implementation, mapping keys 
-as ordered pairs $(x, y)$ to their values \cite{clrs}. This would use less memory 
-by only allocating space as elements are added. In the case of 
-a sparse grid, for each element, a hash-table stores its hash and the element 
-itself. As a result, the memory complexity is $O(n)$ where $n$ is the 
+One possible alternative implementation is a hash map (also known as an associative array 
+or dictionary). This maps keys
+as ordered pairs $(x, y)$ to their values by performing a hash 
+of the key and storing the value in a `bucket' determined by this hash \cite{clrs}. 
+This would use less memory 
+by only allocating space as elements are added. A hashmap only needs to store 
+the added elements and assumes everything else is null. 
+ As a result, the memory complexity is $O(n)$ where $n$ is the 
 number of elements added. 
 
 \subsection*{Comparison}
@@ -54,25 +57,37 @@ Memory complexity has been discussed above. For time complexity of
 each method, 
 \begin{itemize}
     \item \textbf{add(int x, int y, T element)} -- both implementations 
-    have average $O(1)$ time inserts, due to the properties of a hash table and 
-    array. However, the hash map can take more time if the hash table needs 
-    to be recomputed or resized. The array grid never needs to be resized because 
-    everything has been preallocated.
+    have worst case $O(1)$ time inserts, because both the hash function and array indexing 
+    are constant time operations. Note that the hash map is only $O(1)$ if the hash 
+    function is properly implemented and keys are distributed evenly across its 
+    buckets; we assume this is the case \cite{demaine_indyk_kellis_2011}.
     \item \textbf{get(int x, int y)} -- both implementations 
-    are $O(1)$ time, due to the constant time indexing in both cases.
-    \item \textbf{remove(int x, int y)} -- again, both constant time.
+    are $O(1)$ time, similar to the add() function.
+    \item \textbf{remove(int x, int y)} -- again, both constant time because this is essentially 
+    the same as inserting a null value at the position.
     \item \textbf{clear()} -- array grid would take $O(wh)$ time because 
-    it needs to iterate over every grid position. The hash map would take 
+    it needs to iterate over every grid position to determine if 
+    a position has a stored value to clear. The hash map would take 
     $O(n)$ time because it knows which positions have hashes stored
-    and only needs to delete those.
-    \item \textbf{resize(int newWidth, int newHeight)} -- resize is actually 
-    unnecessary for a hash map; if implemented, this would take $O(1)$ time. However 
+    and only needs to clear those.
+    \item \textbf{resize(int newWidth, int newHeight)} -- 
     for array grid, this is $O(wh)$ (where $w$ and $h$ are the old width/height) 
-    because it must check every cell for 
-    elements and copy to the new array.
+    because it must check every cell for elements and copy to the new array.
+    
+    However, a hash map is capable of growing to an arbitrary size \cite{hashmap}. 
+    Bounds on width and height would be done by restricting $x$ and $y$ in add/get/remove operations, 
+    not the underlying data structure. Because of this, a resize operation would also take $O(1)$ time 
+    on a hash map as only these limits would need to be changed.
 \end{itemize}
 
+In conclusion, a hash map would be more suitable for sparse values as it is more space efficient. 
+However, although asymptotic analysis suggests the hash map is always better, 
+the hash map's space efficiency required executing a hash function on every add/get/remove operation. 
+If CPU time is more important than memory and the grid doesn't need to be resized or cleared often, 
+an array-based implementation offers one of the fastest indexing operations to any position, 
+resulting in extremely efficient add/get/remove's.
+
 \bibliography{bibliography} 
-\bibliographystyle{ieeetr}
+\bibliographystyle{IEEEtran}
 
 \end{document}
